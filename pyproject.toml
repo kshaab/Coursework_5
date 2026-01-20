@@ -1,0 +1,21 @@
+[project]
+name = "crswrk-5"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "K",email = "kssshaab@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.13,<4.0"
+dependencies = [
+    "django (>=6.0.1,<7.0.0)",
+    "poetry-core (>=2.0.0,<3.0.0)",
+    "dotenv (>=0.9.9,<0.10.0)",
+    "djangorestframework (>=3.16.1,<4.0.0)",
+    "psycopg2-binary (>=2.9.11,<3.0.0)",
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
