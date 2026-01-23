@@ -135,8 +135,8 @@ CELERY_TASK_TIME_LIMIT = 30 * 60
 
 CELERY_BEAT_SCHEDULE = {
     "block_inactive_user": {
-        "task": "users.tasks.block_inactive_user",
-        "schedule": crontab(hour=3, minute=0),
+        "task": "habits.tasks.send_habits_reminders",
+        "schedule": 60.0,
     },
 }
 
@@ -146,7 +146,9 @@ CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
 
 CORS_ALLOW_ALL_ORIGINS = True
 
+TELEGRAM_URL = "https://api.telegram.org/bot"
 
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 
 
 
