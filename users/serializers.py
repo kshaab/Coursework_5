@@ -1,6 +1,6 @@
-from typing import Dict, Any
+from typing import Any, Dict
 
-from rest_framework.fields import CharField, SerializerMethodField
+from rest_framework.fields import CharField
 from rest_framework.serializers import ModelSerializer
 
 from users.models import User
@@ -8,6 +8,7 @@ from users.models import User
 
 class UserCreateSerializer(ModelSerializer):
     """Сериализатор создания пользователя"""
+
     password = CharField(write_only=True)
 
     class Meta:
@@ -26,6 +27,7 @@ class UserCreateSerializer(ModelSerializer):
 
 class UserPublicSerializer(ModelSerializer):
     """Сериализатор для публичного просмотра пользователей"""
+
     class Meta:
         model = User
         fields = ("id", "town", "avatar")
@@ -41,6 +43,7 @@ class UserPrivateSerializer(ModelSerializer):
 
 class UserUpdateSerializer(ModelSerializer):
     """Сериализатор для обновления профиля"""
+
     class Meta:
         model = User
         fields = (

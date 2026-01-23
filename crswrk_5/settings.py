@@ -2,7 +2,6 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
-from celery.schedules import crontab
 from dotenv import load_dotenv
 
 load_dotenv(override=True)
@@ -47,8 +46,7 @@ ROOT_URLCONF = "crswrk_5.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / ""]
-        ,
+        "DIRS": [BASE_DIR / ""],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -148,6 +146,3 @@ CORS_ALLOW_ALL_ORIGINS = True
 TELEGRAM_URL = "https://api.telegram.org/bot"
 
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
-
-
-

@@ -1,7 +1,9 @@
 from typing import Any
 
-from crswrk_5.settings import TELEGRAM_URL, TELEGRAM_TOKEN
 import requests
+
+from crswrk_5.settings import TELEGRAM_TOKEN, TELEGRAM_URL
+
 
 def send_telegram_reminder(chat_id: Any, message: str) -> None:
     """Отправляет сообщение в телеграм чат"""
