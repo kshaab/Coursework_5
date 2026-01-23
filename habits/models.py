@@ -3,6 +3,7 @@ from users.models import User
 
 
 class Habit(models.Model):
+    """Модель привычки, описывает привычку пользователя"""
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     place = models.CharField(max_length=100, verbose_name="Место выполнения привычки")
     time = models.TimeField(verbose_name="Время, когда необходимо выполнять привычку")
