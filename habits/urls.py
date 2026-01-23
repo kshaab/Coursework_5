@@ -5,9 +5,9 @@ from habits.views import HabitCreateView, HabitListView, HabitRetrieveView ,Habi
 app_name = HabitsConfig.name
 
 urlpatterns = [
-    path("/create/", HabitCreateView.as_view(), name="habit-create"),
-    path("/list/", HabitListView.as_view(), name="habits-list"),
-    path("/habit/<int:pk>", HabitRetrieveView.as_view(), name="habit-retrieve"),
-    path("/update/<int:pk>", HabitUpdateView.as_view(), name="habit-update"),
-    path("/delete/<int:pk>", HabitDestroyView.as_view(), name="habit-delete"),
+    path("create/", HabitCreateView.as_view(), name="habit-create"),
+    path("list/", HabitListView.as_view(), name="habits-list"),
+    path("habit/<int:pk>", HabitRetrieveView.as_view(), name="habit-retrieve"),
+    path("update/<int:pk>", HabitUpdateView.as_view(), name="habit-update"),
+    path("delete/<int:pk>", HabitDestroyView.as_view(), name="habit-delete"),
 ]
