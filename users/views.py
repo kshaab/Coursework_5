@@ -1,5 +1,6 @@
 from typing import List, Type
 
+from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import permissions, viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.serializers import Serializer
@@ -9,6 +10,41 @@ from users.permissions import IsOwnerOrReadOnly
 from users.serializers import UserCreateSerializer, UserPrivateSerializer, UserPublicSerializer, UserUpdateSerializer
 
 
+@extend_schema_view(
+    create=extend_schema(
+        summary="Создание пользователя/регистрация",
+        description="Создает нового пользователя.",
+        request=UserCreateSerializer,
+        responses=UserCreateSerializer,
+    ),
+    retrieve=extend_schema(
+        summary="Детали пользователя",
+        description="Возвращает профиль пользователя с данными о пользователе, приватные данные остаются в закрытом доступе.",
+        responses=UserPrivateSerializer,
+    ),
+    list=extend_schema(
+        summary="Список пользователей",
+        description="Возвращает список всех пользователей.",
+        responses=UserPublicSerializer,
+    ),
+    update=extend_schema(
+        summary="Обновление пользователя",
+        description="Обновляет данные существующего пользователя, обновление доступно только владельцу аккаунта.",
+        request=UserUpdateSerializer,
+        responses=UserUpdateSerializer,
+    ),
+    partial_update=extend_schema(
+        summary="Частичное обновление пользователя",
+        description="Частично обновляет данные пользователя, обновление доступно только владельцу аккаунта.",
+        request=UserUpdateSerializer,
+        responses=UserUpdateSerializer,
+    ),
+    destroy=extend_schema(
+        summary="Удаление пользователя",
+        description="Удаляет пользователя.",
+        responses=None,
+    ),
+)
 class UserViewSet(viewsets.ModelViewSet):
     """Эндпоинт для пользователей"""
 
