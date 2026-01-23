@@ -33,7 +33,6 @@ class UserPublicSerializer(ModelSerializer):
 
 class UserPrivateSerializer(ModelSerializer):
     """Сериализатор для приватного просмотра профиля"""
-    payments = SerializerMethodField()
 
     class Meta:
         model = User

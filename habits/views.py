@@ -33,7 +33,7 @@ class HabitListView(generics.ListAPIView):
         user = self.request.user
         own_habits = Habit.objects.filter(user=user)
         public_habits = Habit.objects.filter(is_public=True).exclude(user=user)
-        return own_habits.union(public_habits).distinct()
+        return own_habits.union(public_habits).order_by("time")
 
 class HabitRetrieveView(generics.RetrieveAPIView):
     """Эндпоинт просмотра одной привычки"""
