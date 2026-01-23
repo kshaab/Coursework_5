@@ -40,7 +40,6 @@ class HabitValidator:
             raise ValidationError("За 7 дней необходимо выполнить привычку хотя бы один раз.")
 
 
-
     def __call__(self, instance):
         self.validate_reward_or_related(instance)
         self.validate_duration(instance)

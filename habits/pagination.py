@@ -1,6 +1,7 @@
 from rest_framework.pagination import PageNumberPagination
 
 
+
 class HabitPageNumberPagination(PageNumberPagination):
     """Пагинация вывода списка привычек"""
     page_size = 5
