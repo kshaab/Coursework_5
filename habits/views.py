@@ -1,5 +1,6 @@
 from django.db.models import QuerySet
 from drf_spectacular.utils import extend_schema
+from rest_framework import permissions
 from rest_framework.generics import CreateAPIView, DestroyAPIView, UpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.serializers import Serializer
@@ -40,7 +41,9 @@ class HabitListView(generics.ListAPIView):
 
     serializer_class = HabitSerializer
     pagination_class = HabitPageNumberPagination
-    permission_classes = [IsOwnerOrPublicReadOnly]
+    permission_classes = [
+        permissions.IsAuthenticated,
+        IsOwnerOrPublicReadOnly]
 
     def get_queryset(self) -> QuerySet:
         """Возвращает список приватных привычек пользователю, публичных для общего просмотра"""
@@ -61,7 +64,10 @@ class HabitRetrieveView(generics.RetrieveAPIView):
 
     queryset = Habit.objects.all()
     serializer_class = HabitSerializer
-    permission_classes = [IsOwner]
+    permission_classes = [
+        permissions.IsAuthenticated,
+        IsOwnerOrPublicReadOnly
+    ]
 
 
 @extend_schema(

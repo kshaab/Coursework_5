@@ -141,8 +141,6 @@ CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "").split(",")
 
 CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
 
-CORS_ALLOW_ALL_ORIGINS = True
-
 TELEGRAM_URL = "https://api.telegram.org/bot"
 
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")

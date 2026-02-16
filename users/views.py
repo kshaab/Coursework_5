@@ -6,6 +6,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.serializers import Serializer
 
 from users.models import User
+from users.pagination import UserPageNumberPagination
 from users.permissions import IsOwnerOrReadOnly
 from users.serializers import UserCreateSerializer, UserPrivateSerializer, UserPublicSerializer, UserUpdateSerializer
 
@@ -49,6 +50,7 @@ class UserViewSet(viewsets.ModelViewSet):
     """Эндпоинт для пользователей"""
 
     queryset = User.objects.all()
+    pagination_class = UserPageNumberPagination
 
     def get_permissions(self) -> List[permissions.BasePermission]:
         """Получает права доступа для действий"""

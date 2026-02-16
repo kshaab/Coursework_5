@@ -26,8 +26,10 @@ class HabitValidator:
 
     @staticmethod
     def validate_duration(data: Any) -> None:
-        duration = data.get("duration")
         """Проверяет, что время выполнения привычки не больше 120 секунд"""
+        duration = data.get("duration")
+        if duration is None:
+            raise ValidationError("Поле duration обязательно для заполнения.")
         if duration > 120:
             raise ValidationError("Время выполнения привычки не должно превышать 120 секунд.")
 
@@ -42,6 +44,8 @@ class HabitValidator:
     def validate_periodicity(data: Any) -> None:
         """Проверяет, что привычка выполняется минимум раз в 7 дней"""
         periodicity = data.get("periodicity")
+        if periodicity is None:
+            raise ValidationError("Поле periodicity обязательно для заполнения.")
         if periodicity < 1:
             raise ValidationError("Минимальная периодичность привычки 1 день.")
         if periodicity > 7:
