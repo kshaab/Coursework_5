@@ -1,18 +1,20 @@
 from datetime import datetime, time
 from typing import Any
+from unittest.mock import Mock, patch
 
+import pytest
 import requests
 from django.urls import reverse
 from rest_framework import status
-from rest_framework.test import APITestCase, APIClient
-from unittest.mock import patch, Mock
-from habits.services import send_telegram_reminder
+from rest_framework.serializers import ValidationError
+from rest_framework.test import APIClient, APITestCase
 
 from habits.models import Habit
-from users.models import User
-import pytest
+from habits.services import send_telegram_reminder
 from habits.validators import HabitValidator
-from rest_framework.serializers import ValidationError
+from users.models import User
+from habits.tasks import send_habits_reminders
+
 
 class HabitTestCase(APITestCase):
     """Тестирование эндпоинтов привычки"""
@@ -111,7 +113,7 @@ class HabitTestCase(APITestCase):
         self.assertEqual(Habit.objects.all().count(), 0)
 
     @patch("habits.services.requests.get")
-    def test_send_telegram_reminder_success(self, mock_get) -> None:
+    def test_send_telegram_reminder_success(self, mock_get: Mock) -> None:
         """Тестирует успешную отправку напоминания"""
         mock_response = Mock()
         mock_response.raise_for_status.return_value = None
@@ -121,14 +123,14 @@ class HabitTestCase(APITestCase):
 
         mock_get.assert_called_once()
 
-    def test_send_habits_reminders_task(self):
+    def test_send_habits_reminders_task(self) -> None:
         """Покрытие Celery таска send_habits_reminders"""
-    from habits.tasks import send_habits_reminders
+
     send_habits_reminders()
 
     @patch("habits.services.requests.get")
     @patch("habits.services.logger")
-    def test_send_telegram_reminder_error(self, mock_logger, mock_get) -> None:
+    def test_send_telegram_reminder_error(self, mock_logger: Mock, mock_get: Mock) -> None:
         """Тестирует вызов ошибок при отправке телеграм напоминания"""
         mock_get.side_effect = requests.exceptions.RequestException("boom")
 
@@ -216,12 +218,7 @@ class TestHabitValidator:
         self.user = User.objects.create(email="test@test.com")
 
         self.pleasant_habit = Habit.objects.create(
-            action="pleasant",
-            user=self.user,
-            is_pleasant=True,
-            duration=60,
-            periodicity=1,
-            time=time(9, 0)
+            action="pleasant", user=self.user, is_pleasant=True, duration=60, periodicity=1, time=time(9, 0)
         )
 
     def valid_data(self) -> dict[str, Any]:
@@ -233,7 +230,6 @@ class TestHabitValidator:
             "duration": 60,
             "periodicity": 1,
         }
-
 
     def test_pleasant_cannot_have_reward(self) -> None:
         """Тестирует исключение одновременного выбора связанной привычки и указания вознаграждения"""
@@ -252,7 +248,6 @@ class TestHabitValidator:
         with pytest.raises(ValidationError):
             self.validator(data)
 
-
     def test_duration_gt_120(self) -> None:
         """Тестирует, что время выполнения привычки не превышает 120 сек."""
         data = self.valid_data()
@@ -261,16 +256,10 @@ class TestHabitValidator:
         with pytest.raises(ValidationError):
             self.validator(data)
 
-
     def test_related_must_be_pleasant(self) -> None:
         """Тестирует, что связанная привычка только приятная"""
         bad_habit = Habit.objects.create(
-            action="bad",
-            user=self.user,
-            is_pleasant=False,
-            duration=60,
-            periodicity=1,
-            time=time(9, 0)
+            action="bad", user=self.user, is_pleasant=False, duration=60, periodicity=1, time=time(9, 0)
         )
 
         data = self.valid_data()
@@ -278,7 +267,6 @@ class TestHabitValidator:
 
         with pytest.raises(ValidationError):
             self.validator(data)
-
 
     def test_periodicity_less_than_one(self) -> None:
         """Тестирует, что привычка выполняется хотя бы 1 раз в 7 дней"""
@@ -320,7 +308,6 @@ class TestHabitPagination:
 
         self.url = reverse("habits:habits-list")
 
-
     def test_default_page_size(self) -> None:
         """Тестирует количество привычек на странице"""
 
@@ -328,7 +315,6 @@ class TestHabitPagination:
 
         assert response.status_code == 200
         assert len(response.data["results"]) == 5
-
 
     def test_second_page(self) -> None:
         """Тестирует количество привычек на второй странице"""
@@ -338,13 +324,12 @@ class TestHabitPagination:
         assert response.status_code == 200
         assert len(response.data["results"]) == 5
 
-    def test_last_page(self):
+    def test_last_page(self) -> None:
         """Тестирует количество привычек на последней странице"""
         response = self.client.get(f"{self.url}?page=3")
         assert response.status_code == 200
         data = response.json()
         assert len(data["results"]) == 2
-
 
     def test_custom_page_size(self) -> None:
         """Тестирует изменение количества привычек на странице через URL"""
@@ -354,7 +339,6 @@ class TestHabitPagination:
         assert response.status_code == 200
         assert len(response.data["results"]) == 7
 
-
     def test_max_page_size(self) -> None:
         """Тестирует максимальное количество привычек на странице"""
 
@@ -362,7 +346,3 @@ class TestHabitPagination:
 
         assert response.status_code == 200
         assert len(response.data["results"]) == 10
-
-
-
-

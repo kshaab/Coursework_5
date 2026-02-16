@@ -1,9 +1,9 @@
+import pytest
 from django.urls import reverse
 from rest_framework import status
-from rest_framework.test import APITestCase, APIClient
-import pytest
-from users.models import User
+from rest_framework.test import APIClient, APITestCase
 
+from users.models import User
 
 
 class UserTestCase(APITestCase):
@@ -117,5 +117,3 @@ class TestUserPagination:
         assert response.status_code == 200
         data = response.json()
         assert len(data["results"]) == 10  # max_page_size = 10
-
-

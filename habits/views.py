@@ -41,9 +41,7 @@ class HabitListView(generics.ListAPIView):
 
     serializer_class = HabitSerializer
     pagination_class = HabitPageNumberPagination
-    permission_classes = [
-        permissions.IsAuthenticated,
-        IsOwnerOrPublicReadOnly]
+    permission_classes = [permissions.IsAuthenticated, IsOwnerOrPublicReadOnly]
 
     def get_queryset(self) -> QuerySet:
         """Возвращает список приватных привычек пользователю, публичных для общего просмотра"""
@@ -64,10 +62,7 @@ class HabitRetrieveView(generics.RetrieveAPIView):
 
     queryset = Habit.objects.all()
     serializer_class = HabitSerializer
-    permission_classes = [
-        permissions.IsAuthenticated,
-        IsOwnerOrPublicReadOnly
-    ]
+    permission_classes = [permissions.IsAuthenticated, IsOwnerOrPublicReadOnly]
 
 
 @extend_schema(
