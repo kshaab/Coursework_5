@@ -49,8 +49,8 @@ jobs:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123456
       PGPASSWORD: 123456
-      HOST: postgres
-      PORT: 5432
+      DB_HOST: postgres
+      DB_PORT: 5432
       DEBUG: "True"
       CORS_ALLOWED_ORIGINS: http://localhost:8000
       CSRF_TRUSTED_ORIGINS: http://localhost:8000
@@ -70,7 +70,7 @@ jobs:
 
     - name: Wait for Postgres
       run: |
-        until pg_isready -h localhost -p 5432; do
+        until pg_isready -h postgres -p 5432; do
           sleep 1
         done
 
