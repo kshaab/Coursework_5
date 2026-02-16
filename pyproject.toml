@@ -6,7 +6,7 @@ authors = [
     {name = "K",email = "kssshaab@gmail.com"}
 ]
 readme = "README.md"
-requires-python = ">=3.13,<4.0"
+requires-python = ">=3.10,<4.0"
 dependencies = [
     "django (>=4.2,<6.0)",
     "poetry-core (>=2.0.0,<3.0.0)",
@@ -25,6 +25,7 @@ dependencies = [
     "types-requests (>=2.32.4.20260107,<3.0.0.0)",
     "pytest (>=9.0.2,<10.0.0)",
     "pytest-django (>=4.12.0,<5.0.0)",
+    "gunicorn (>=25.1.0,<26.0.0)",
 ]
 
 
