@@ -1,0 +1,119 @@
+name: Django CI
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install poetry
+          poetry config virtualenvs.create false
+          poetry install
+
+      - name: Run Flake8
+        run: flake8 .
+
+  test:
+    needs: lint
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: 123456
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      SECRET_KEY: testsecret
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      PGPASSWORD: 123456
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DEBUG: "True"
+      CORS_ALLOWED_ORIGINS: http://localhost:8000
+      CSRF_TRUSTED_ORIGINS: http://localhost:8000
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+
+    - name: Install deps
+      run: |
+        pip install poetry
+        poetry config virtualenvs.create false
+        poetry install
+
+    - name: Wait for Postgres
+      run: |
+        until pg_isready -h localhost -p 5432; do
+          sleep 1
+        done
+
+    - name: Migrate
+      run: poetry run python manage.py migrate
+
+    - name: Test
+      run: poetry run python manage.py test
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: DEBUG FILES
+        run: |
+          pwd
+          ls -la
+
+      - name: Log in to Docker Hub
+        run: echo ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }} | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
+
+      - name: Build Docker image
+        run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ github.sha }} .
+
+      - name: Push Docker image to Docker Hub
+        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ github.sha }}
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Deploy
+        run: |
+          echo "${{ secrets.SSH_KEY }}" > key
+          chmod 600 key
+
+          ssh -i key -o StrictHostKeyChecking=no kshaab@${{ secrets.SERVER_IP }} << 'EOF'
+            cd ${{ secrets.DEPLOY_DIR }}
+            docker compose pull
+            docker compose up -d --build
+          EOF

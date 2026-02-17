@@ -11,9 +11,9 @@ from rest_framework.test import APIClient, APITestCase
 
 from habits.models import Habit
 from habits.services import send_telegram_reminder
+from habits.tasks import send_habits_reminders
 from habits.validators import HabitValidator
 from users.models import User
-from habits.tasks import send_habits_reminders
 
 
 class HabitTestCase(APITestCase):
