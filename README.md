@@ -12,6 +12,8 @@
 - [Celery](#celery-)
 - [Технологии](#технологии)
 - [Тестирование](#тестирование)
+- [Deployment & CI/CD](#deployment--cicd)
+- [GitHub Actions CI/CD](#github-actions-cicd)
 - [Автор](#автор)
 
 
@@ -66,6 +68,69 @@ poetry run python manage.py test
 ```bash
 poetry run python manage.py test habits
 ```
+
+## Deployment & CI/CD
+1. Подключение к серверу по SSH
+```bash
+ssh user@SERVER_IP
+```
+2. Установка Docker и Docker Compose
+```bash
+sudo apt update
+sudo apt install -y docker.io docker-compose-plugin
+```
+Проверка установки:
+```bash
+docker --version
+docker compose version
+```
+3. Клонирование проекта
+```bash
+git clone https://github.com/kshaab/Coursework_5
+cd crswrk_5
+```
+4. Создание .env
+```bash
+DEBUG=True
+ALLOWED_HOSTS=*
+
+POSTGRES_DB=habits_tracker
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=your_password
+POSTGRES_HOST=db
+POSTGRES_PORT=5432
+
+SECRET_KEY=your_secret_key
+```
+5. Запуск проекта
+```bash
+docker compose up -d --build
+```
+Проверка запуска: 
+```bash
+docker compose ps
+```
+
+Проверка приложения по адресу:
+```cpp
+http://158.160.94.191:8000
+```
+## GitHub Actions CI/CD
+Workflow:
+```bash
+.github/workflows/
+```
+
+Workflow запускается автоматически при каждом push в репозиторий.
+
+Этапы workflow:
+1. Клонирование репозитория
+2. Установка зависимостей
+3. Запуск тестов (деплой выполняется только при успешном прохождении тестов.)
+4. Подключение к серверу по SSH
+5. Pull последних изменений
+6. Пересборка контейнеров
+7. Перезапуск приложения
 
 ## Технологии
 - Python 3.13
